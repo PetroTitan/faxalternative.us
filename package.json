@@ -1,0 +1,13 @@
+{
+  "name": "faxalternative-us",
+  "private": true,
+  "description": "faxalternative.us: a small static guide to fax machine alternatives (online fax and fax apps).",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "preview": "node build.mjs && cd dist && python3 -m http.server 8788"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
