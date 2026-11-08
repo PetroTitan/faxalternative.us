@@ -35,15 +35,21 @@ cd dist && python3 -m http.server 8788
 
 1. Re-check the sources in `SOURCES` (faxB2B pricing, numbers, security, terms; both store listings).
 2. Edit `src/content.mjs` and set `SITE.reviewed` to today's date (it drives the visible date, `dateModified` and sitemap `lastmod`).
-3. Commit and push to `main`; Cloudflare Pages rebuilds automatically.
+3. Run `node build.mjs`, commit and push to `main`, then deploy `dist/` (see below).
 
 To re-render the images after changing `src/static/favicon.svg`, run `scripts/make-images.py` with a Python that has Playwright and Chromium.
 
-## Cloudflare Pages settings
+## Deploying (Cloudflare Pages, direct upload)
 
-- Framework preset: None
-- Build command: `node build.mjs`
-- Build output directory: `dist`
-- Custom domain: `faxalternative.us`
+- Account: info@helperg.com's Cloudflare account; Pages project `faxalternative-us` (https://faxalternative-us.pages.dev).
+- Custom domain: `faxalternative.us` (CNAME `@` → `faxalternative-us.pages.dev`, SSL by Cloudflare). `www` is not set up yet.
+- The project is a **direct upload** project: Cloudflare does not build from GitHub. To publish a change, build, zip the contents of `dist/` and upload:
 
-`_headers` marks `*.pages.dev` copies as `noindex`, so only faxalternative.us is indexed. In the Cloudflare dashboard, keep AI crawlers allowed (Security → Bots / AI Crawl Control) or the site cannot be cited.
+```bash
+node build.mjs && rm -f /tmp/faxalternative-dist.zip && (cd dist && zip -qr /tmp/faxalternative-dist.zip .)
+```
+
+  Then in the dashboard: Workers & Pages → faxalternative-us → Create deployment → upload the zip. With Wrangler logged in, `npx wrangler pages deploy dist --project-name faxalternative-us` does the same.
+- Cloudflare cannot attach Git to a direct upload project. For automatic deploys on push, create a new Git-connected Pages project (build command `node build.mjs`, output `dist`) and move the custom domain to it.
+
+`_headers` marks `*.pages.dev` copies as `noindex`, so only faxalternative.us is indexed. In the zone's Security → Settings → AI Crawler and Agent access policies, Search, Training and Agents are all "Allow"; keep them that way or the site cannot be cited.
