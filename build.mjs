@@ -382,6 +382,13 @@ const headers = () => `/*
 /favicon.svg
   Cache-Control: public, max-age=604800
 
+/favicon.ico
+  Content-Type: image/x-icon
+  Cache-Control: public, max-age=604800
+
+/BingSiteAuth.xml
+  Content-Type: application/xml; charset=utf-8
+
 https://:project.pages.dev/*
   X-Robots-Tag: noindex
 
@@ -450,7 +457,8 @@ for (const page of PAGES) {
     if (!h.includes(`href="${target}"`)) problems.push(`${page.path}: missing link to ${target}`);
   if (/\$\{|undefined/.test(h)) problems.push(`${page.path}: template leftovers`);
 }
-for (const f of ['/og.png', '/favicon.svg', '/favicon.ico', '/apple-touch-icon.png'])
+// Site-ownership files: Bing Webmaster Tools (BingSiteAuth.xml) and the IndexNow key.
+for (const f of ['/og.png', '/favicon.svg', '/favicon.ico', '/apple-touch-icon.png', '/BingSiteAuth.xml', '/901a72d7d0ee373e4d4f8f44b1eb9525.txt'])
   if (!files.has(f)) problems.push(`missing static file ${f}`);
 
 if (problems.length) {
